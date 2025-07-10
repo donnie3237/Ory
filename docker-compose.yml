@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  kratos:
+    image: oryd/kratos:v1.1.0
+    restart: unless-stopped
+    ports:
+      - "4433:4433" # admin
+      - "4434:4434" # public
+    environment:
+      - DSN=postgres://kratos:kratos@kratos-db:5432/kratos?sslmode=disable
+      - LOG_LEVEL=debug
+    command: serve -c /etc/config/kratos/kratos.yml
+    volumes:
+      - ./kratos/config:/etc/config/kratos
+    depends_on:
+      - kratos-migrate
+      - kratos-db
+
+  kratos-db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kratos
+      POSTGRES_PASSWORD: kratos
+      POSTGRES_DB: kratos
+    volumes:
+      - kratos-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+  kratos-migrate:
+    image: oryd/kratos:v1.1.0
+    depends_on:
+      - kratos-db
+    environment:
+      - DSN=postgres://kratos:kratos@kratos-db:5432/kratos?sslmode=disable
+    command: migrate sql -e --yes
+
+  keto:
+    image: oryd/keto:v0.11.0
+    ports:
+      - "4466:4466" # read API
+      - "4467:4467" # write API
+    command: serve -c /etc/config/keto/keto.yml
+    volumes:
+      - ./keto/config:/etc/config/keto
+
+volumes:
+  kratos-db-data:
