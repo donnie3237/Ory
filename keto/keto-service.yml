@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keto-public
+  namespace: ory
+spec:
+  selector:
+    app: keto
+  ports:
+    - name: public
+      port: 4455
+      targetPort: 4455
+      nodePort: 30055 # เปิดพอร์ตสำหรับเข้าถึงจากภายนอก
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keto-admin
+  namespace: ory
+spec:
+  selector:
+    app: keto
+  ports:
+    - name: admin
+      port: 4456
+      targetPort: 4456
+      nodePort: 30056 # เปิดพอร์ตสำหรับเข้าถึงจากภายนอก
+  type: NodePort

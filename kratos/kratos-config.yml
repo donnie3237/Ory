@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kratos-config
+  namespace: ory
+data:
+  kratos.yaml: |
+    dsn: postgres://postgres:password@postgres:5432/auth?sslmode=disable
+    serve:
+      public:
+        base_url: https://auth.dossware.com/
+        cors:
+          enabled: true
+      admin:
+        base_url: http://kratos:4434/
+    selfservice:
+      default_browser_return_url: https://auth.dossware.com/
+      flows:
+        login:
+          ui_url: https://auth.dossware.com/login
+        registration:
+          ui_url: https://auth.dossware.com/register
+    log:
+      level: debug
+    secrets:
+      cookie:
+        - please-change-this-secret
+    identity:
+      schemas:
+        - id: default
+          url: file:///etc/kratos/identity.schema.json
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kratos-identity-schema
+  namespace: ory
+data:
+  identity.schema.json: |
+    {
+      "$id": "http://auth.dossware.com/identity.schema.json",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "properties": {
+        "traits": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "name": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string",
+              "enum": ["admin", "superadmin"]
+            }
+          },
+          "required": ["email", "role"]
+        }
+      }
+    }

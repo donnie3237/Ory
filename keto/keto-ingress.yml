@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: keto-public
+  namespace: ory
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`auth.dossware.com`) && PathPrefix(`/keto/`)
+      kind: Rule
+      services:
+        - name: keto-public
+          port: 4455
+  tls:
+    certResolver: myresolver

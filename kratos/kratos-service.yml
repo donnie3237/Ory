@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kratos-public
+  namespace: ory
+spec:
+  selector:
+    app: kratos
+  ports:
+    - name: public
+      port: 4433
+      targetPort: 4433
+      nodePort: 30033 # เปิดพอร์ตสำหรับเข้าถึงจากภายนอก
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kratos-admin
+  namespace: ory
+spec:
+  selector:
+    app: kratos
+  ports:
+    - name: admin
+      port: 4434
+      targetPort: 4434
+      nodePort: 30034 # เปิดพอร์ตสำหรับเข้าถึงจากภายนอก
+  type: NodePort

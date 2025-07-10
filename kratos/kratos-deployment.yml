@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kratos
+  namespace: ory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kratos
+  template:
+    metadata:
+      labels:
+        app: kratos
+    spec:
+      containers:
+        - name: kratos
+          image: oryd/kratos:v0.11.0
+          args:
+            - serve
+            - --config
+            - /etc/kratos/kratos.yaml
+          ports:
+            - containerPort: 4433
+              name: public
+            - containerPort: 4434
+              name: admin
+          volumeMounts:
+            - name: config
+              mountPath: /etc/kratos/kratos.yaml
+              subPath: kratos.yaml
+            - name: identity-schema
+              mountPath: /etc/kratos/identity.schema.json
+              subPath: identity.schema.json
+      volumes:
+        - name: config
+          configMap:
+            name: kratos-config
+        - name: identity-schema
+          configMap:
+            name: kratos-identity-schema

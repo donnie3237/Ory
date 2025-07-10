@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keto-config
+  namespace: ory
+data:
+  keto.yml: |
+    dsn: postgres://postgres:password@postgres:5432/auth?sslmode=disable
+    namespaces:
+      - id: default
+        name: default
+    serve:
+      public:
+        base_url: https://auth.dossware.com/keto/
+        cors:
+          enabled: true
+      admin:
+        base_url: http://keto:4456/
