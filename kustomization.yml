@@ -1,0 +1,14 @@
+resources:
+  - postgres/deployment.yaml
+  - postgres/service.yaml
+  - postgres/pvc.yaml
+
+  - kratos/deployment.yaml
+  - kratos/service.yaml
+  - kratos/config.yaml
+  - kratos/schema.yaml
+  - kratos/ingress.yaml
+
+  - keto/deployment.yaml
+  - keto/service.yaml
+  - keto/ingress.yaml
